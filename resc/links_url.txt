@@ -20,7 +20,6 @@
 "https://www.imdb.com/search/title/?title_type=feature&genres=Sport": "Sport",
 "https://www.imdb.com/search/title/?title_type=feature&genres=Film-Noir": "Film-Noir",
 "https://www.imdb.com/search/title/?title_type=feature&genres=Reality-TV": "Reality-TV",
-
 "https://www.imdb.com/search/title/?title_type=feature&genres=Game-Show": "Game-Show",
 "https://www.imdb.com/search/title/?title_type=feature&genres=News": "News",
 "https://www.imdb.com/search/title/?title_type=feature&genres=Talk-Show": "Talk-Show",
