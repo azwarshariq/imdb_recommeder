@@ -8,14 +8,11 @@ import joblib
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 
-
-# Load the vectorizer and model
-model = SentenceTransformer('model/model')
-
-#Atlas connection
-uri = "mongodb+srv://azwarshariq:e0mGo8aavNOudTqk@cluster.sfx9ced.mongodb.net/?retryWrites=true&w=majority"
+# Load the model
+model = SentenceTransformer('model')
 
 # Create a new client and connect to the server
+uri = "mongodb+srv://azwarshariq:e0mGo8aavNOudTqk@cluster.sfx9ced.mongodb.net/?retryWrites=true&w=majority"
 client = MongoClient(uri, server_api=ServerApi('1'))
 
 
@@ -25,7 +22,9 @@ app = Flask(__name__)
 @app.route('/predict', methods=['POST'])
 def predict():
     
+    #Get prompt-data
     data = request.json
+    number_of_results = data['number_of_results']
     genre = data['genre']
     prompt = data['prompt']
     
@@ -35,11 +34,9 @@ def predict():
 
     # Retrieve all documents from the collection
     data = collection.find()
-
-    # Convert documents to a list
     data = list(data)
 
-    #User-geenrated prompt's embeddings
+    #User-generated prompt's embeddings
     prompt_embeddings = model.encode(prompt)
 
     similarity_index = []
@@ -56,24 +53,22 @@ def predict():
         similarity_index.append(cosine_scores)
         index_tracker += 1
 
-    #print(similarity_index)
-
-
-    #Sort the similarity_index
     similarity_index_arr = np.array(similarity_index)
     sorted_similarity_index_arr = similarity_index_arr[similarity_index_arr[:, 0].argsort()]
     sorted_similarity_index = sorted_similarity_index_arr.tolist()
 
-    #Return top 3 results
-    return jsonify({'Summary': data[int(sorted_similarity_index[999][1])]['summary'],
-                    'Title': data[int(sorted_similarity_index[999][1])]['_id'],
-                    },
-                    {'Summary': data[int(sorted_similarity_index[998][1])]['summary'],
-                    'Title': data[int(sorted_similarity_index[998][1])]['_id'],
-                    },
-                    {'Summary': data[int(sorted_similarity_index[997][1])]['summary'],
-                    'Title': data[int(sorted_similarity_index[997][1])]['_id'],
-                    },)
+    n = int(number_of_results)  # Number of top results to return
+    results = []
+
+    for i in range(n):
+        result_index = 999 - i  
+        result = {
+            'Summary': data[int(sorted_similarity_index[result_index][1])]['summary'],
+            'Title': data[int(sorted_similarity_index[result_index][1])]['_id']
+        }
+        results.append(result)
+
+    return jsonify(results)
 
 # Run the Flask app
 if __name__ == '__main__':

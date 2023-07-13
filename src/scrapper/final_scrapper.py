@@ -2,7 +2,6 @@ import requests
 import csv
 from bs4 import BeautifulSoup
 
-# Define the header
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36',
 }
@@ -28,7 +27,6 @@ def process_page(url, genre):
     soup = BeautifulSoup(r.content, 'html.parser')
     movie_containers = soup.find_all('div', class_='lister-item-content')
 
-    # Check if there are any movie containers
     if not movie_containers:
         return True
     
@@ -45,6 +43,16 @@ def process_page(url, genre):
     
 # Define the list of URLs and genres to process
 url_genre_map = {
+    "https://www.imdb.com/search/title/?title_type=feature&genres=adventure": "Adventure",
+    "https://www.imdb.com/search/title/?title_type=feature&genres=Action": "Action",
+    "https://www.imdb.com/search/title/?title_type=feature&genres=Drama": "Drama",
+    "https://www.imdb.com/search/title/?title_type=feature&genres=Comedy": "Comedy",
+    "https://www.imdb.com/search/title/?title_type=feature&genres=Fantasy": "Fantasy",
+    "https://www.imdb.com/search/title/?title_type=feature&genres=Family": "Family",
+    "https://www.imdb.com/search/title/?title_type=feature&genres=Romance": "Romance",
+    "https://www.imdb.com/search/title/?title_type=feature&genres=Sci-Fi": "Sci-Fi",
+    "https://www.imdb.com/search/title/?title_type=feature&genres=Thriller": "Thriller",
+    "https://www.imdb.com/search/title/?title_type=feature&genres=Animation": "Animation",
     "https://www.imdb.com/search/title/?title_type=feature&genres=Crime": "Crime",
     "https://www.imdb.com/search/title/?title_type=feature&genres=Mystery": "Mystery",
     "https://www.imdb.com/search/title/?title_type=feature&genres=Horror": "Horror",
